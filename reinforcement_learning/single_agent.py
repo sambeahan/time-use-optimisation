@@ -1,8 +1,8 @@
 from stable_baselines3 import A2C
 from environments import *
 
-env = SBPEnv()
-model = A2C.load("reinforcement_learning/models/sbp-agent")
+env = StressEnv()
+model = A2C.load("reinforcement_learning/models/stress-agent")
 
 obs, info = env.reset()
 while True:

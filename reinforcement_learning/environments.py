@@ -23,6 +23,8 @@ class TimeUseEnv(gym.Env):
 
         self.observation_space = spaces.Box(low=obs_low, high=obs_high)
 
+        self.last_action = 0
+
         self.current_obs = None
         self.time_left = 23.7
 
@@ -39,25 +41,37 @@ class TimeUseEnv(gym.Env):
 
         next_obs[action] += np.float32(0.1)
 
+        reward = 0
+
         current_obj = 0
         post_obj = 0
         if agent == "stress":
             current_obj = objective_functions.calc_stress(self.current_obs.tolist())
             post_obj = objective_functions.calc_stress(next_obs.tolist())
+            reward += 5
         elif agent == "hr":
             current_obj = objective_functions.calc_hr(self.current_obs.tolist())
             post_obj = objective_functions.calc_hr(next_obs.tolist())
+            reward += 10
         elif agent == "sbp":
             current_obj = objective_functions.calc_sbp(self.current_obs.tolist())
             post_obj = objective_functions.calc_sbp(next_obs.tolist())
+            reward += 100
         elif agent == "dbp":
             current_obj = objective_functions.calc_dbp(self.current_obs.tolist())
             post_obj = objective_functions.calc_dbp(next_obs.tolist())
+            reward += 100
         elif agent == "bmi":
             current_obj = objective_functions.calc_bmi(self.current_obs.tolist())
             post_obj = objective_functions.calc_bmi(next_obs.tolist())
+            reward += 10
 
-        reward = -1 * post_obj
+        reward += current_obj - post_obj
+
+        if action != self.last_action:
+            reward += 1
+
+        self.last_action = action
 
         self.time_left -= 0.1
 
@@ -92,9 +106,14 @@ class StressEnv(TimeUseEnv):
         current_obj = objective_functions.calc_stress(self.current_obs.tolist())
         post_obj = objective_functions.calc_stress(next_obs.tolist())
 
-        reward = -1 * post_obj
+        reward = current_obj - post_obj
 
         self.time_left -= 0.1
+
+        if action != self.last_action:
+            reward += 5
+
+        self.last_action = action
 
         done = False
         if self.time_left <= 0:
@@ -118,7 +137,12 @@ class HREnv(TimeUseEnv):
         current_obj = objective_functions.calc_hr(self.current_obs.tolist())
         post_obj = objective_functions.calc_hr(next_obs.tolist())
 
-        reward = -1 * post_obj
+        reward = current_obj - post_obj
+
+        if action != self.last_action:
+            reward += 10
+
+        self.last_action = action
 
         self.time_left -= 0.1
 
@@ -144,7 +168,12 @@ class SBPEnv(TimeUseEnv):
         current_obj = objective_functions.calc_sbp(self.current_obs.tolist())
         post_obj = objective_functions.calc_sbp(next_obs.tolist())
 
-        reward = -1 * post_obj
+        reward = current_obj - post_obj
+
+        if action != self.last_action:
+            reward += 100
+
+        self.last_action = action
 
         self.time_left -= 0.1
 
@@ -170,7 +199,12 @@ class DBPEnv(TimeUseEnv):
         current_obj = objective_functions.calc_dbp(self.current_obs.tolist())
         post_obj = objective_functions.calc_dbp(next_obs.tolist())
 
-        reward = -1 * post_obj
+        reward = current_obj - post_obj
+
+        if action != self.last_action:
+            reward += 100
+
+        self.last_action = action
 
         self.time_left -= 0.1
 
@@ -196,7 +230,12 @@ class BMIEnv(TimeUseEnv):
         current_obj = objective_functions.calc_bmi(self.current_obs.tolist())
         post_obj = objective_functions.calc_bmi(next_obs.tolist())
 
-        reward = -1 * post_obj
+        reward = current_obj - post_obj
+
+        if action != self.last_action:
+            reward += 10
+
+        self.last_action = action
 
         self.time_left -= 0.1
 
