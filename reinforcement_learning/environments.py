@@ -6,30 +6,52 @@ import random
 import objective_functions
 
 
+STRESS_VAR_BONUS = 5
+HR_VAR_BONUS = 10
+SBP_VAR_BONUS = 100
+DBP_VAR_BONUS = 100
+BMI_VAR_BONUS = 10
+
+
+def reward_add(current_obj, post_obj):
+    # return current_obj - post_obj
+    return -1 * post_obj
+
+
 class TimeUseEnv(gym.Env):
     def __init__(self) -> None:
         # define bounds
-        self.max_sleep = 24.0
-        self.min_sleep = 0.0
-        self.max_sedentary = 24.0
-        self.min_sedentary = 0.0
-        self.max_active = 24.0
-        self.min_active = 0.0
+        self.max_sleep = 12.0
+        self.min_sleep = 4.0
+        self.max_sedentary = 20.0
+        self.min_sedentary = 2.0
+        self.max_active = 10.0
+        self.min_active = 0.5
 
         self.action_space = spaces.Discrete(3)
 
-        obs_low = np.array([0.1, 0.1, 0.1])
+        self.obs_start = np.array(
+            [
+                np.float32(self.min_sleep),
+                np.float32(self.min_sedentary),
+                np.float32(self.min_active),
+            ]
+        )
         obs_high = np.array([self.max_sleep, self.max_sedentary, self.max_active])
 
-        self.observation_space = spaces.Box(low=obs_low, high=obs_high)
+        self.observation_space = spaces.Box(low=self.obs_start, high=obs_high)
 
-        self.last_action = 0
+        self.stress_last_action = 0
+        self.hr_last_action = 0
+        self.sbp_last_action = 0
+        self.dbp_last_action = 0
+        self.bmi_last_action = 0
 
         self.current_obs = None
-        self.time_left = 23.7
+        self.time_left = 24 - np.sum(self.obs_start)
 
     def reset(self, seed=None, options=None):
-        self.current_obs = np.array([np.float32(0.1), np.float32(0.1), np.float32(0.1)])
+        self.current_obs = self.obs_start
 
         return self.current_obs, {}
 
@@ -48,30 +70,40 @@ class TimeUseEnv(gym.Env):
         if agent == "stress":
             current_obj = objective_functions.calc_stress(self.current_obs.tolist())
             post_obj = objective_functions.calc_stress(next_obs.tolist())
-            reward += 5
+            if action != self.stress_last_action:
+                reward += STRESS_VAR_BONUS
+
+            self.stress_last_action = action
         elif agent == "hr":
             current_obj = objective_functions.calc_hr(self.current_obs.tolist())
             post_obj = objective_functions.calc_hr(next_obs.tolist())
-            reward += 10
+            if action != self.hr_last_action:
+                reward += HR_VAR_BONUS
+
+            self.hr_last_action = action
         elif agent == "sbp":
             current_obj = objective_functions.calc_sbp(self.current_obs.tolist())
             post_obj = objective_functions.calc_sbp(next_obs.tolist())
-            reward += 100
+            if action != self.sbp_last_action:
+                reward += SBP_VAR_BONUS
+
+            self.sbp_last_action = action
         elif agent == "dbp":
             current_obj = objective_functions.calc_dbp(self.current_obs.tolist())
             post_obj = objective_functions.calc_dbp(next_obs.tolist())
-            reward += 100
+            if action != self.dbp_last_action:
+                reward += DBP_VAR_BONUS
+
+            self.dbp_last_action = action
         elif agent == "bmi":
             current_obj = objective_functions.calc_bmi(self.current_obs.tolist())
             post_obj = objective_functions.calc_bmi(next_obs.tolist())
-            reward += 10
+            if action != self.bmi_last_action:
+                reward += BMI_VAR_BONUS
 
-        reward += current_obj - post_obj
+            self.bmi_last_action = action
 
-        if action != self.last_action:
-            reward += 1
-
-        self.last_action = action
+        reward += reward_add(current_obj, post_obj)
 
         self.time_left -= 0.1
 
@@ -110,10 +142,10 @@ class StressEnv(TimeUseEnv):
 
         self.time_left -= 0.1
 
-        if action != self.last_action:
-            reward += 5
+        if action != self.stress_last_action:
+            reward += STRESS_VAR_BONUS
 
-        self.last_action = action
+        self.stress_last_action = action
 
         done = False
         if self.time_left <= 0:
@@ -139,10 +171,10 @@ class HREnv(TimeUseEnv):
 
         reward = current_obj - post_obj
 
-        if action != self.last_action:
-            reward += 10
+        if action != self.hr_last_action:
+            reward += HR_VAR_BONUS
 
-        self.last_action = action
+        self.hr_last_action = action
 
         self.time_left -= 0.1
 
@@ -170,10 +202,10 @@ class SBPEnv(TimeUseEnv):
 
         reward = current_obj - post_obj
 
-        if action != self.last_action:
-            reward += 100
+        if action != self.sbp_last_action:
+            reward += SBP_VAR_BONUS
 
-        self.last_action = action
+        self.sbp_last_action = action
 
         self.time_left -= 0.1
 
@@ -201,10 +233,10 @@ class DBPEnv(TimeUseEnv):
 
         reward = current_obj - post_obj
 
-        if action != self.last_action:
-            reward += 100
+        if action != self.dbp_last_action:
+            reward += DBP_VAR_BONUS
 
-        self.last_action = action
+        self.dbp_last_action = action
 
         self.time_left -= 0.1
 
@@ -232,10 +264,10 @@ class BMIEnv(TimeUseEnv):
 
         reward = current_obj - post_obj
 
-        if action != self.last_action:
-            reward += 10
+        if action != self.bmi_last_action:
+            reward += BMI_VAR_BONUS
 
-        self.last_action = action
+        self.bmi_last_action = action
 
         self.time_left -= 0.1
 
