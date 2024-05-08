@@ -6,19 +6,19 @@ import random
 import objective_functions
 
 
-STRESS_VAR_BONUS = 5
-HR_VAR_BONUS = 10
-SBP_VAR_BONUS = 100
-DBP_VAR_BONUS = 100
-BMI_VAR_BONUS = 10
+STRESS_VAR_BONUS = 0
+HR_VAR_BONUS = 0
+SBP_VAR_BONUS = 0
+DBP_VAR_BONUS = 0
+BMI_VAR_BONUS = 0
 
 
 def reward_add(current_obj, post_obj):
     # Individual action reward:
-    return current_obj - post_obj
+    # return current_obj - post_obj
 
-    # Cumulative reward:
-    # return -1 * post_obj
+    # Cumulative reward: (much better)
+    return -1 * post_obj
 
 
 class TimeUseEnv(gym.Env):
