@@ -2,7 +2,7 @@ from stable_baselines3 import A2C
 from environments import *
 
 STARTING_HOURS = 5.5
-TRAINING_EPISODES = 5
+TRAINING_EPISODES = 10
 
 agents = ["stress", "hr", "sbp", "dbp", "bmi"]
 envs = [StressEnv(), HREnv(), SBPEnv(), DBPEnv(), BMIEnv()]

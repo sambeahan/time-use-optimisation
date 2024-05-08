@@ -15,10 +15,10 @@ BMI_VAR_BONUS = 10
 
 def reward_add(current_obj, post_obj):
     # Individual action reward:
-    # return current_obj - post_obj
+    return current_obj - post_obj
 
     # Cumulative reward:
-    return -1 * post_obj
+    # return -1 * post_obj
 
 
 class TimeUseEnv(gym.Env):
@@ -58,7 +58,7 @@ class TimeUseEnv(gym.Env):
 
         return self.current_obs, {}
 
-    def step(self, action, agent, is_training=False):
+    def step(self, action, agent, is_training=True):
         next_obs = np.zeros(3)
 
         for i, time in enumerate(self.current_obs):
