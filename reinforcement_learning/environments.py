@@ -13,36 +13,24 @@ DBP_VAR_BONUS = 0
 BMI_VAR_BONUS = 0
 
 
-def reward_add(current_obj, post_obj):
+def get_reward(current_obj, post_obj):
     # Individual action reward:
-    # return current_obj - post_obj
+    return current_obj - post_obj
 
     # Cumulative reward: (much better)
-    return -1 * post_obj
+    # return -1 * post_obj
 
 
 class TimeUseEnv(gym.Env):
     def __init__(self) -> None:
         # define bounds
-        self.max_sleep = 12.0
-        self.min_sleep = 4.0
-        self.max_sedentary = 18.0
-        self.min_sedentary = 1.0
-        self.max_active = 10.0
-        self.min_active = 0.5
+        self.lower_bound = np.array([np.float32(0.1) for _ in range(3)])
+
+        self.upper_bound = np.array([24.0 for _ in range(3)])
 
         self.action_space = spaces.Discrete(3)
 
-        self.obs_start = np.array(
-            [
-                np.float32(self.min_sleep),
-                np.float32(self.min_sedentary),
-                np.float32(self.min_active),
-            ]
-        )
-        self.obs_high = np.array([self.max_sleep, self.max_sedentary, self.max_active])
-
-        self.observation_space = spaces.Box(low=self.obs_start, high=self.obs_high)
+        self.observation_space = spaces.Box(low=self.lower_bound, high=self.upper_bound)
 
         self.stress_last_action = 0
         self.hr_last_action = 0
@@ -51,10 +39,31 @@ class TimeUseEnv(gym.Env):
         self.bmi_last_action = 0
 
         self.current_obs = None
-        self.time_left = 24 - np.sum(self.obs_start)
+        self.time_left = 24 - np.sum(self.lower_bound)
 
     def reset(self, seed=None, options=None):
-        self.current_obs = self.obs_start
+        # TODO: deal with rand upper bound total not equalling 24
+        # self.lower_bound = np.array(
+        #    [np.float32(random.randint(1, 120) / 10) for _ in range(3)]
+        # )
+
+        # self.upper_bound = np.array(
+        #    [np.float32(random.randint(121, 240) / 10) for _ in range(3)]
+        # )
+
+        self.lower_bound = np.array([np.float32(4.0), np.float32(1.0), np.float32(0.5)])
+        self.upper_bound = np.array(
+            [np.float32(12.0), np.float32(18.0), np.float32(12.0)]
+        )
+
+        # print("Lower:", self.lower_bound)
+        # print("Upper:", self.upper_bound)
+
+        self.current_obs = np.copy(self.lower_bound)
+        self.time_left = 24 - np.sum(self.lower_bound)
+
+        # print(self.time_left)
+        print("Reset")
 
         return self.current_obs, {}
 
@@ -66,7 +75,11 @@ class TimeUseEnv(gym.Env):
 
         # Only add action if below threshold
         valid_action = False
-        if next_obs[action] + np.float32(0.1) <= self.obs_high[action] or is_training:
+        if (
+            next_obs[action] + np.float32(0.1)
+            <= self.upper_bound[action]
+            # or is_training
+        ):
             next_obs[action] += np.float32(0.1)
             valid_action = True
 
@@ -111,7 +124,10 @@ class TimeUseEnv(gym.Env):
 
             self.bmi_last_action = action
 
-        reward += reward_add(current_obj, post_obj)
+        if valid_action:
+            reward += get_reward(current_obj, post_obj)
+        else:
+            reward = -100
 
         if valid_action:
             self.time_left -= 0.1
@@ -163,9 +179,11 @@ class BMIEnv(TimeUseEnv):
 if __name__ == "__main__":
     env = TimeUseEnv()
     obs = env.reset()
+    obs = env.reset()
+    obs = env.reset()
     while True:
         action = random.randint(0, 2)
         obs, r, done, _, _ = env.step(action, "stress")
-        print(obs)
+        # print(obs)
         if done:
             break

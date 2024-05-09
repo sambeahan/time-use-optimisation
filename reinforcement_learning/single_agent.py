@@ -1,6 +1,6 @@
 from stable_baselines3 import A2C
 from environments import *
-from objective_functions import calc_outcomes
+from objective_functions import calc_outcomes, calc_stress
 
 env = TimeUseEnv()
 model = A2C.load("reinforcement_learning/models/stress-agent")
@@ -20,3 +20,5 @@ results = calc_outcomes(obs[0], obs[1], obs[2])
 print("\nHealth outcomes:")
 for result, value in results.items():
     print(f"{result}: {results[result]}")
+
+print(calc_stress(obs.tolist()))
