@@ -17,7 +17,7 @@ def get_reward(current_obj, post_obj):
     # Individual action reward:
     return current_obj - post_obj
 
-    # Cumulative reward: (much better)
+    # Cumulative reward:
     # return -1 * post_obj
 
 
