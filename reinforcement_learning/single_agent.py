@@ -3,7 +3,7 @@ from environments import *
 from objective_functions import calc_outcomes, calc_stress
 
 env = TimeUseEnv()
-model = A2C.load("reinforcement_learning/models/stress-agent")
+model = A2C.load("reinforcement_learning/models/static-stress-agent-1-0")
 
 obs, info = env.reset()
 while True:

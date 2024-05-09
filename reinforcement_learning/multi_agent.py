@@ -8,7 +8,7 @@ agents = ["stress", "hr", "sbp", "dbp", "bmi"]
 models = {}
 
 for agent in agents:
-    models[agent] = A2C.load(f"reinforcement_learning/models/{agent}-agent")
+    models[agent] = A2C.load(f"reinforcement_learning/models/static-{agent}-agent-1-0")
 
 obs, info = env.reset()
 while True:
