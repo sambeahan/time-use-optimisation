@@ -17,6 +17,7 @@
 # Required Libraries
 import math
 import matplotlib.pyplot as plt
+import numpy as np
 import random
 import os
 
@@ -353,7 +354,7 @@ def non_dominated_sorting_genetic_algorithm_II(
         list_of_functions=list_of_functions,
     )
     while count <= generations:
-        print("Generation = ", count)
+        # print("Generation = ", count)
         population = np.vstack([population, offspring])
         rank = fast_non_dominated_sorting(
             population, number_of_functions=len(list_of_functions)
