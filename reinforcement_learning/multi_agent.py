@@ -1,6 +1,7 @@
-from stable_baselines3 import A2C
+from stable_baselines3 import A2C, PPO, DQN
 from environments import *
 from objective_functions import calc_outcomes
+import numpy as np
 
 env = TimeUseEnv()
 
@@ -8,7 +9,7 @@ agents = ["stress", "hr", "sbp", "dbp", "bmi"]
 models = {}
 
 for agent in agents:
-    models[agent] = A2C.load(f"reinforcement_learning/models/static-{agent}-PPO-1-0")
+    models[agent] = PPO.load(f"reinforcement_learning/models/static-{agent}-PPO-1-0")
 
 time_totals = {"Sleep": 0, "Sedentary": 0, "Active": 0}
 
@@ -20,8 +21,16 @@ health_totals = {
     "BMI": 0,
 }
 
+health_vals = {
+    "Stress Level": [],
+    "Resting Heart Rate": [],
+    "Systolic Blood Pressure": [],
+    "Diastolic Blood Pressure": [],
+    "BMI": [],
+}
+
 for i in range(100):
-    print(i)
+    print("Run:", i)
     obs, info = env.reset()
     while True:
         for agent, model in models.items():
@@ -42,6 +51,7 @@ for i in range(100):
 
     for outcome, value in results.items():
         health_totals[outcome] += value
+        health_vals[outcome].append(value)
 
 print("\nAverage time use:")
 for label, time in time_totals.items():
@@ -51,3 +61,9 @@ for label, time in time_totals.items():
 print("\nAverage health outcomes:")
 for outcome, value in health_totals.items():
     print(outcome + ":", value / 100)
+
+
+print("\nStandard deviation:")
+for outcome, values in health_vals.items():
+    values = np.array(values)
+    print(outcome + ":", np.std(values))

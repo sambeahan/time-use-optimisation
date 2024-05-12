@@ -1,4 +1,4 @@
-from stable_baselines3 import A2C, PPO
+from stable_baselines3 import A2C, PPO, DQN
 from environments import *
 
 STARTING_HOURS = 5.5
@@ -9,6 +9,7 @@ envs = [StressEnv(), HREnv(), SBPEnv(), DBPEnv(), BMIEnv()]
 
 for i, agent in enumerate(agents):
     env = envs[i]
-    model = PPO("MlpPolicy", env, verbose=1)
+    model = DQN("MlpPolicy", env, verbose=1)
+    # model.learn(total_timesteps=(240 - STARTING_HOURS * 10) * TRAINING_EPISODES)
     model.learn(total_timesteps=(240 - STARTING_HOURS * 10) * TRAINING_EPISODES)
-    model.save(f"reinforcement_learning/models/static-{agent}-PPO-1-0")
+    model.save(f"reinforcement_learning/models/static-{agent}-DQN-1-0")
