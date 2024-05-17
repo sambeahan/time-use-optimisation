@@ -7,6 +7,10 @@ PARENT_DIR = Path(__file__).parent.parent
 MODEL_FILE = Path(PARENT_DIR, "regression_models", "time-use-health-2-0.pkl")
 
 
+with open(MODEL_FILE, "rb") as model_file:
+    model = pickle.load(model_file)
+
+
 def calc_z1(sleep, sedentary, exercise):
     return math.sqrt(2 / 3) * math.log(sleep / math.sqrt(sedentary * exercise))
 
@@ -17,9 +21,6 @@ def calc_z2(sedentary, exercise):
 
 # First function to optimize
 def calc_outcomes(sleep, sedentary, exercise):
-    with open(MODEL_FILE, "rb") as model_file:
-        model = pickle.load(model_file)
-
     z1 = calc_z1(sleep, sedentary, exercise)
     z2 = calc_z2(sedentary, exercise)
 
