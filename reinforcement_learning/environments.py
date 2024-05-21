@@ -41,20 +41,36 @@ class TimeUseEnv(gym.Env):
         self.current_obs = None
         self.time_left = 24 - np.sum(self.lower_bound)
 
-    def reset(self, seed=None, options=None):
-        # TODO: deal with rand upper bound total not equalling 24
-        # self.lower_bound = np.array(
-        #    [np.float32(random.randint(1, 120) / 10) for _ in range(3)]
-        # )
+    def reset(self, seed=None, options=None, lower_bound=None, upper_bound=None):
+        if lower_bound is not None:
+            self.lower_bound = np.array(lower_bound)
+        else:
+            # Static bounds:
+            # self.lower_bound = np.array(
+            #     [np.float32(4.0), np.float32(1.0), np.float32(0.5)]
+            # )
 
-        # self.upper_bound = np.array(
-        #    [np.float32(random.randint(121, 240) / 10) for _ in range(3)]
-        # )
+            # Dynamic bounds:
+            self.lower_bound = np.array(
+                [np.float32(random.randint(1, 120) / 10) for _ in range(3)]
+            )
 
-        self.lower_bound = np.array([np.float32(4.0), np.float32(1.0), np.float32(0.5)])
-        self.upper_bound = np.array(
-            [np.float32(12.0), np.float32(18.0), np.float32(12.0)]
-        )
+        if upper_bound is not None:
+            self.upper_bound = np.array(upper_bound)
+        else:
+            # Static bounds:
+            # self.upper_bound = np.array(
+            #     [np.float32(12.0), np.float32(18.0), np.float32(12.0)]
+            # )
+
+            # Dynamic bounds:
+            self.upper_bound = np.array(
+                [np.float32(random.randint(121, 240) / 10) for _ in range(3)]
+            )
+
+        while np.sum(self.lower_bound) >= 24.0:
+            for i, time_used in enumerate(self.lower_bound):
+                self.lower_bound[i] -= 0.1
 
         # print("Lower:", self.lower_bound)
         # print("Upper:", self.upper_bound)
@@ -184,6 +200,6 @@ if __name__ == "__main__":
     while True:
         action = random.randint(0, 2)
         obs, r, done, _, _ = env.step(action, "stress")
-        # print(obs)
+        print(obs)
         if done:
             break
