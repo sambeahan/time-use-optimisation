@@ -1,13 +1,13 @@
 import time
 import numpy as np
-from stable_baselines3 import A2C, PPO, DQN
+from stable_baselines3 import A2C
 from environments import *
 from objective_functions import calc_outcomes
 
 
 SEDENTARY_WORK = {"id": "sed_work", "lower": [4, 7.5, 0.5], "upper": [11, 18, 12]}
 ACTIVE_WORK = {"id": "act_work", "lower": [4, 1, 7.5], "upper": [11, 12, 18]}
-ACTIVE_WEEKEND = {"id": "act_wknd", "lower": [4, 1, 4], "upper": [9, 5, 16]}
+ACTIVE_WEEKEND = {"id": "act_wknd", "lower": [4, 1, 4], "upper": [12, 16, 16]}
 RELAXING_WEEKEND = {"id": "rel_wknd", "lower": [8, 6, 0.5], "upper": [12, 18, 2]}
 SOCIAL_WEEKEND = {"id": "soc_wknd", "lower": [4, 4, 1], "upper": [10, 18, 6]}
 
@@ -23,7 +23,8 @@ agents = ["stress", "hr", "sbp", "dbp", "bmi"]
 models = {}
 
 for agent in agents:
-    models[agent] = A2C.load(f"reinforcement_learning/models/dynamic-{agent}-A2C-1-0")
+    models[agent] = A2C.load(f"reinforcement_learning/models/static-{agent}-A2C-1-0")
+    # models[agent] = A2C.load(f"reinforcement_learning/models/dynamic-{agent}-A2C-1-0")
 
 day_id_list = [day["id"] for day in WEEK]
 day_types = set(day_id_list)
@@ -67,6 +68,14 @@ for type_name in day_types:
 for i in range(RUNS):
     print("Run:", i)
 
+    weekly_totals = {
+        "Stress Level": 0,
+        "Resting Heart Rate": 0,
+        "Systolic Blood Pressure": 0,
+        "Diastolic Blood Pressure": 0,
+        "BMI": 0,
+    }
+
     for j, day in enumerate(WEEK):
         print("Day:", j)
         obs, info = env.reset(lower_bound=day["lower"], upper_bound=day["upper"])
@@ -74,10 +83,13 @@ for i in range(RUNS):
             prev_obs = [0, 0, 0]
             for agent, model in models.items():
                 # print(agent)
+
                 action, _states = model.predict(obs)
                 # print(action)
+
                 obs, rewards, dones, truncated, info = env.step(action, agent, False)
                 # print(obs)
+                # print(info)
 
                 valid_action = False
                 for j, time_spent in enumerate(obs):
@@ -88,6 +100,9 @@ for i in range(RUNS):
                     agent_choices[day["id"]][agent][action] += 0.1
 
                 if dones:
+                    # print("Completed")
+                    # print(obs)
+                    # print(np.sum(obs))
                     break
             if dones:
                 break
@@ -99,13 +114,15 @@ for i in range(RUNS):
 
         for outcome, value in results.items():
             health_totals[outcome] += value
-            health_vals[outcome].append(value / len(WEEK))
+            weekly_totals[outcome] += value
+    for outcome, value in weekly_totals.items():
+        health_vals[outcome].append(value / len(WEEK))
 
 print("\nAverage time use:")
 for type_name in day_types:
     print(type_name)
     for time_used in time_totals[type_name]:
-        print(time_used / (RUNS * len(WEEK)))
+        print(time_used / (RUNS * day_type_freq[type_name]))
 
 
 print("\nAverage health outcomes:")
@@ -129,3 +146,5 @@ for type_name in day_types:
                 for time_spent in agent_choices[type_name][agent]
             ],
         )
+
+print(len(health_vals["Stress Level"]))

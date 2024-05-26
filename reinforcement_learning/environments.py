@@ -43,7 +43,7 @@ class TimeUseEnv(gym.Env):
 
     def reset(self, seed=None, options=None, lower_bound=None, upper_bound=None):
         if lower_bound is not None:
-            self.lower_bound = np.array(lower_bound)
+            self.lower_bound = np.array(lower_bound).astype(np.float32)
         else:
             # Static bounds:
             self.lower_bound = np.array(
@@ -56,7 +56,7 @@ class TimeUseEnv(gym.Env):
             # )
 
         if upper_bound is not None:
-            self.upper_bound = np.array(upper_bound)
+            self.upper_bound = np.array(upper_bound).astype(np.float32)
         else:
             # Static bounds:
             self.upper_bound = np.array(
@@ -155,7 +155,7 @@ class TimeUseEnv(gym.Env):
         for i, time in enumerate(next_obs):
             self.current_obs[i] = np.float32(time)
 
-        return self.current_obs, reward, done, False, {}
+        return self.current_obs, reward, done, False, {"valid": valid_action}
 
     def render(self, mode="human"):
         pass
