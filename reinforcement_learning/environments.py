@@ -46,27 +46,27 @@ class TimeUseEnv(gym.Env):
             self.lower_bound = np.array(lower_bound)
         else:
             # Static bounds:
-            # self.lower_bound = np.array(
-            #     [np.float32(4.0), np.float32(1.0), np.float32(0.5)]
-            # )
+            self.lower_bound = np.array(
+                [np.float32(4.0), np.float32(1.0), np.float32(0.5)]
+            )
 
             # Dynamic bounds:
-            self.lower_bound = np.array(
-                [np.float32(random.randint(1, 120) / 10) for _ in range(3)]
-            )
+            # self.lower_bound = np.array(
+            #     [np.float32(random.randint(1, 120) / 10) for _ in range(3)]
+            # )
 
         if upper_bound is not None:
             self.upper_bound = np.array(upper_bound)
         else:
             # Static bounds:
-            # self.upper_bound = np.array(
-            #     [np.float32(12.0), np.float32(18.0), np.float32(12.0)]
-            # )
+            self.upper_bound = np.array(
+                [np.float32(12.0), np.float32(18.0), np.float32(12.0)]
+            )
 
             # Dynamic bounds:
-            self.upper_bound = np.array(
-                [np.float32(random.randint(121, 240) / 10) for _ in range(3)]
-            )
+            # self.upper_bound = np.array(
+            #     [np.float32(random.randint(121, 240) / 10) for _ in range(3)]
+            # )
 
         while np.sum(self.lower_bound) >= 24.0:
             for i, time_used in enumerate(self.lower_bound):
@@ -92,8 +92,8 @@ class TimeUseEnv(gym.Env):
         # Only add action if below threshold
         valid_action = False
         if (
-            next_obs[action] + np.float32(0.1)
-            <= self.upper_bound[action]
+            round(next_obs[action] + np.float32(0.1), 1)
+            <= round(self.upper_bound[action], 1)
             # or is_training
         ):
             next_obs[action] += np.float32(0.1)
@@ -149,7 +149,7 @@ class TimeUseEnv(gym.Env):
             self.time_left -= 0.1
 
         done = False
-        if self.time_left <= 0:
+        if round(self.time_left, 1) <= 0:
             done = True
 
         for i, time in enumerate(next_obs):

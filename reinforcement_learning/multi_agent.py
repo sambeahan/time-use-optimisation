@@ -12,9 +12,9 @@ agents = ["stress", "hr", "sbp", "dbp", "bmi"]
 models = {}
 
 for agent in agents:
-    # models[agent] = A2C.load(f"reinforcement_learning/models/static-{agent}-A2C-1-0")
+    models[agent] = A2C.load(f"reinforcement_learning/models/static-{agent}-A2C-1-0")
     # models[agent] = PPO.load(f"reinforcement_learning/models/static-{agent}-PPO-1-0")
-    models[agent] = DQN.load(f"reinforcement_learning/models/static-{agent}-DQN-1-0")
+    # models[agent] = DQN.load(f"reinforcement_learning/models/static-{agent}-DQN-1-0")
 
 time_totals = {"Sleep": 0, "Sedentary": 0, "Active": 0}
 time_use_vals = {"Sleep": [], "Sedentary": [], "Active": []}
