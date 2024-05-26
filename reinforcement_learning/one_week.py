@@ -14,7 +14,7 @@ SOCIAL_WEEKEND = {"id": "soc_wknd", "lower": [4, 4, 1], "upper": [10, 18, 6]}
 week_a = [SEDENTARY_WORK for _ in range(5)] + [ACTIVE_WEEKEND, RELAXING_WEEKEND]
 week_b = [ACTIVE_WORK for _ in range(5)] + [RELAXING_WEEKEND, SOCIAL_WEEKEND]
 
-WEEK = week_a
+WEEK = week_b
 RUNS = 100
 
 env = TimeUseEnv()
@@ -23,8 +23,8 @@ agents = ["stress", "hr", "sbp", "dbp", "bmi"]
 models = {}
 
 for agent in agents:
-    models[agent] = A2C.load(f"reinforcement_learning/models/static-{agent}-A2C-1-0")
-    # models[agent] = A2C.load(f"reinforcement_learning/models/dynamic-{agent}-A2C-1-0")
+    # models[agent] = A2C.load(f"reinforcement_learning/models/static-{agent}-A2C-1-0")
+    models[agent] = A2C.load(f"reinforcement_learning/models/dynamic-{agent}-A2C-1-0")
 
 day_id_list = [day["id"] for day in WEEK]
 day_types = set(day_id_list)
