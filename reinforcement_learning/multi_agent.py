@@ -39,6 +39,9 @@ agent_choices = {}
 for agent in agents:
     agent_choices[agent] = [0, 0, 0]
 
+reward = 0
+turns = 0
+
 start = time.time()
 
 for i in range(RUNS):
@@ -51,6 +54,9 @@ for i in range(RUNS):
             action, _states = model.predict(obs)
             # print(action)
             obs, rewards, dones, truncated, info = env.step(action, agent, False)
+
+            reward += rewards
+            turns += 1
 
             valid_action = False
             for j, time_spent in enumerate(obs):
@@ -99,5 +105,6 @@ print("\nAgent choices")
 for agent in agent_choices:
     print(agent + ":", [time_spent / RUNS for time_spent in agent_choices[agent]])
 
+print("\nAverage reward:", reward / turns)
 
 print("\nRuntime:", (end - start) / RUNS)
