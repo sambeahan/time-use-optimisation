@@ -1,15 +1,23 @@
 """Single objective genetic algorithm for continuous function optimization"""
 
 # Code from https://machinelearningmastery.com/simple-genetic-algorithm-from-scratch-in-python/
-# Adapted with stress objective function
+# Adapted with stress objective function, and normalising solution to 24 hour total
 
+import sys
+import os
 from numpy.random import randint
 from numpy.random import rand
+
+sys.path.insert(1, os.path.join(sys.path[0], ".."))
+import objective_functions
+
+
+OBJECTIVE = "stress"
 
 
 def objective(sleep_time, active_time, sedentary_time):
     """The objective function for stress level"""
-    return -1.11 * sleep_time + 1.58 * active_time + 0.737 * sedentary_time
+    return objective_functions.calc_stress([sleep_time, active_time, sedentary_time])
 
 
 def decode(bounds, n_bits, bitstring):
@@ -28,6 +36,10 @@ def decode(bounds, n_bits, bitstring):
         value = bounds[i][0] + (integer / largest) * (bounds[i][1] - bounds[i][0])
         # store
         decoded.append(value)
+
+    total = sum(decoded)
+    for i, val in enumerate(decoded):
+        decoded[i] = (decoded[i] * 24) / total
     return decoded
 
 

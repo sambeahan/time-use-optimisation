@@ -1,1 +1,0 @@
-Run the file `run.py` to run the single day problem using NSGA-II, utilising the implementation in `nsga_ii.py`
