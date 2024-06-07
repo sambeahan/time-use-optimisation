@@ -1,9 +1,18 @@
 import time
 import numpy as np
+from pathlib import Path
 from stable_baselines3 import A2C
 from environments import *
+
+sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from objective_functions import calc_outcomes
 
+ALGORITHM = "A2C"  # also need to change on line 36
+MODEL_VERSION = "1-0"
+TRAINING_METHOD = "dynamic"
+
+PARENT_DIR = Path(__file__).resolve().parent.parent
+MODEL_DIR = Path(PARENT_DIR, "reinforcement_learning", "models")
 
 SEDENTARY_WORK = {"id": "sed_work", "lower": [4, 7.5, 0.5], "upper": [11, 18, 12]}
 ACTIVE_WORK = {"id": "act_work", "lower": [4, 1, 7.5], "upper": [11, 12, 18]}
@@ -23,8 +32,9 @@ agents = ["stress", "hr", "sbp", "dbp", "bmi"]
 models = {}
 
 for agent in agents:
-    # models[agent] = A2C.load(f"reinforcement_learning/models/static-{agent}-A2C-1-0")
-    models[agent] = A2C.load(f"reinforcement_learning/models/dynamic-{agent}-A2C-1-0")
+    models[agent] = A2C.load(
+        Path(MODEL_DIR, f"{TRAINING_METHOD}-{agent}-{ALGORITHM}-{MODEL_VERSION}")
+    )
 
 day_id_list = [day["id"] for day in WEEK]
 day_types = set(day_id_list)

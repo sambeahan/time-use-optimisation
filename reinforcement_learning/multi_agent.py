@@ -1,13 +1,19 @@
 from stable_baselines3 import A2C, PPO, DQN
 from environments import *
-from objective_functions import calc_outcomes
 import numpy as np
 import time
 import json
 from pathlib import Path
 
-PARENT_DIR = Path(__file__).parent.parent
-ALGORITHM = "PPO"  # also need to change on line 19
+sys.path.insert(1, os.path.join(sys.path[0], ".."))
+from objective_functions import calc_outcomes
+
+ALGORITHM = "A2C"  # also need to change on line 26
+MODEL_VERSION = "1-0"
+TRAINING_METHOD = "static"
+
+PARENT_DIR = Path(__file__).resolve().parent.parent
+MODEL_DIR = Path(PARENT_DIR, "reinforcement_learning", "models")
 
 RUNS = 100
 
@@ -17,8 +23,8 @@ agents = ["stress", "hr", "sbp", "dbp", "bmi"]
 models = {}
 
 for agent in agents:
-    models[agent] = PPO.load(
-        f"reinforcement_learning/models/static-{agent}-{ALGORITHM}-1-0"
+    models[agent] = A2C.load(
+        Path(MODEL_DIR, f"{TRAINING_METHOD}-{agent}-{ALGORITHM}-{MODEL_VERSION}")
     )
 
 time_totals = {"Sleep": 0, "Sedentary": 0, "Active": 0}

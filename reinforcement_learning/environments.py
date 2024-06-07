@@ -1,8 +1,11 @@
+import sys
+import os
 import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
 import random
 
+sys.path.insert(1, os.path.join(sys.path[0], ".."))
 import objective_functions
 
 

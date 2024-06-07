@@ -1,4 +1,4 @@
-"""Genetic algorithm search for continuous function optimization"""
+"""Single objective genetic algorithm for continuous function optimization"""
 
 # Code from https://machinelearningmastery.com/simple-genetic-algorithm-from-scratch-in-python/
 # Adapted with stress objective function
