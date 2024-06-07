@@ -3,7 +3,7 @@ import pickle
 from pathlib import Path
 import numpy as np
 
-PARENT_DIR = Path(__file__).parent.parent
+PARENT_DIR = Path(__file__).parent
 MODEL_FILE = Path(PARENT_DIR, "regression_models", "time-use-health-2-0.pkl")
 
 

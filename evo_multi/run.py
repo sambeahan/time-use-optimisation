@@ -1,9 +1,14 @@
 import random
-import numpy as np
 import time
+import sys
+import os
+import numpy as np
 
-import objective_functions
 import ngsa_ii
+
+sys.path.insert(1, os.path.join(sys.path[0], ".."))
+import objective_functions
+
 
 RUNS = 100
 
