@@ -4,7 +4,7 @@ import sys
 import os
 import numpy as np
 
-import ngsa_ii
+import nsga_ii
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 import objective_functions
@@ -29,7 +29,7 @@ start = time.time()
 
 for i in range(RUNS):
     print("Run", i)
-    ngsa_time_use = ngsa_ii.non_dominated_sorting_genetic_algorithm_II(
+    ngsa_time_use = nsga_ii.non_dominated_sorting_genetic_algorithm_II(
         population_size=50,
         mutation_rate=0.1,
         min_values=[4, 1, 0.5],
