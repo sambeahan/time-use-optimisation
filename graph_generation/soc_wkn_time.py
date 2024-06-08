@@ -1,5 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from pathlib import Path
+
+PARENT_DIR = Path(__file__).resolve().parent.parent
+GRAPH_PATH = Path(PARENT_DIR, "graph_generation", "graphs", "b_soc_wkn.pdf")
 
 # set width of bar
 BAR_WIDTH = 0.2
@@ -7,10 +11,10 @@ fig, ax = plt.subplots(figsize=(6, 5))
 ax.grid(axis="y", zorder=0)
 
 # set height of bar
-stat = [9.60, 12.41, 2]
-dyn = [9.62, 12.74, 1.64]
-lower_bound = [8, 6, 0.5]
-upper_bound = [12, 18, 2]
+stat = [8.88, 12.5, 2.62]
+dyn = [9.06, 12.21, 2.73]
+lower_bound = [4, 4, 1]
+upper_bound = [10, 18, 6]
 
 # Set position of bar on X axis
 br1 = np.arange(len(stat))
@@ -55,6 +59,6 @@ plt.xticks(
 )
 
 plt.legend()
-plt.title("Relaxing weekend day time use")
+plt.title("Social weekend day time use (Week B)")
 # plt.show()
-plt.savefig("graph_generation/graphs/rel_wkn.pdf")
+plt.savefig(GRAPH_PATH)

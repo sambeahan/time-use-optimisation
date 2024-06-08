@@ -1,5 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from pathlib import Path
+
+PARENT_DIR = Path(__file__).resolve().parent.parent
+GRAPH_PATH = Path(PARENT_DIR, "graph_generation", "graphs", "time_use.pdf")
 
 # set width of bar
 BAR_WIDTH = 0.1
@@ -34,4 +38,4 @@ plt.xticks(
 plt.legend()
 plt.title("Average time use chosen by each algorithm")
 # plt.show()
-plt.savefig("graphs/time_use.pdf")
+plt.savefig(GRAPH_PATH)

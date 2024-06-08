@@ -1,5 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from pathlib import Path
+
+PARENT_DIR = Path(__file__).resolve().parent.parent
+GRAPH_PATH = Path(PARENT_DIR, "graph_generation", "graphs", "a_sed_work.pdf")
 
 # set width of bar
 BAR_WIDTH = 0.2
@@ -55,6 +59,6 @@ plt.xticks(
 )
 
 plt.legend()
-plt.title("Sedentary work day time use")
-plt.show()
-# plt.savefig("graph_generation/graphs/sed_work.pdf")
+plt.title("Sedentary work day time use (Week A)")
+# plt.show()
+plt.savefig(GRAPH_PATH)
