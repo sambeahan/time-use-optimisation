@@ -8,7 +8,7 @@ To run a single RL agent on the single day problem, run the `single_agent.py` fi
 
 ## Training
 
-To train a set of RL agents for each health outcome, use `training.py`. To switch between static and dynamic training, the reset function in `environments.py` needs to be changed accordingly.
+To train a set of RL agents for each health outcome, use `training.py`. To switch between static and dynamic training, the `reset()` function in `environments.py` needs to be changed accordingly.
 
 ## RL Environments
 
