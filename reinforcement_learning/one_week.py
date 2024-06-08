@@ -76,7 +76,7 @@ for type_name in day_types:
         agent_choices[type_name][agent] = [0, 0, 0]
 
 for i in range(RUNS):
-    print("Run:", i)
+    print("\nRun:", i)
 
     weekly_totals = {
         "Stress Level": 0,
