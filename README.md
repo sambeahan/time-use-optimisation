@@ -6,11 +6,9 @@ This is a repository for optimising daily time use to achieve better health outc
 pip install -r requirements.txt
 ```
 
-The evolutionary optimisation is contained in the `evo_optimisation` folder
+## Optimisation
 
-`reinforcement_learning` contains the reinforcement learning approach for optimisation.
-
-The `evo_optimisation` and `reinforcement_learning` folders both contain a seperate README for further instructions.
+The evolutionary optimisation is contained in the `evo_optimisation` folder, and `reinforcement_learning` contains the reinforcement learning approach for optimisation. Both folders contain a seperate README for further instructions.
 
 `graph_generation` contains the code used to generate graphs displaying optimisation results.
 
